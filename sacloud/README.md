@@ -3,7 +3,7 @@
 ## Examples
 
 ```cue
-package test
+package example
 
 import (
   "alpha.dagger.io/dagger"
@@ -17,26 +17,28 @@ account: #AuthStatus
 #AuthStatus: {
 	config: sacloud.#Config
 
-	account: string & dagger.#Output
-
 	// Container image
-	ctr: os.#Container & {
+	_status: os.#Container & {
 		image: sacloud.#CLI & {
 			"config": config
+			package: jq: true
 		}
 		always: true
 
 		command: """
-			usacloud auth-status -o json > /account
+			usacloud auth-status -o json | jq .[] > /auth-status
 			"""
 	}
 
 	// account information
-	account: ({
-		os.#File & {
-			from: ctr
-			path: "/account"
-		}
-	}).contents
+	status: dagger.#Output & {
+		#up: [
+			op.#Load & {from: _status},
+			op.#Export & {
+				source: "/auth-status"
+				format: "json"
+			},
+		]
+	}
 }
 ```
