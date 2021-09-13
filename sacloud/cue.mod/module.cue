@@ -1,0 +1,1 @@
+module: "github.com/sacloud/dagger-modules/sacloud"
