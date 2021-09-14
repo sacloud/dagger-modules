@@ -24,18 +24,18 @@ let defaultVersion = "latest"
 			from: "ghcr.io/sacloud/usacloud:\(version)"
 			#up: [
 				op.#FetchContainer & {ref: from},
-    		for pkg, info in package {
-    			if (info & true) != _|_ {
-    				op.#Exec & {
-    					args: ["apk", "add", "-U", "--no-cache", pkg]
-    				}
-    			}
-    			if (info & string) != _|_ {
-    				op.#Exec & {
-    					args: ["apk", "add", "-U", "--no-cache", "\(pkg)\(info)"]
-    				}
-    			}
-    		},
+				for pkg, info in package {
+					if (info & true) != _|_ {
+						op.#Exec & {
+							args: ["apk", "add", "-U", "--no-cache", pkg]
+						}
+					}
+					if (info & string) != _|_ {
+						op.#Exec & {
+							args: ["apk", "add", "-U", "--no-cache", "\(pkg)\(info)"]
+						}
+					}
+				},
 			]
 		}
 
@@ -46,8 +46,8 @@ let defaultVersion = "latest"
 			"""
 
 		secret: {
-		  "/run/secrets/token":  config.token
-		  "/run/secrets/secret": config.secret
+			"/run/secrets/token":  config.token
+			"/run/secrets/secret": config.secret
 		}
 	}
 }
